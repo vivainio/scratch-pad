@@ -1,0 +1,11 @@
+[project]
+extra_javascript = ["assets/reading-tools/reading-tools.js"]
+extra_css = ["assets/reading-tools/reading-tools.css"]
+site_name = "Zensical reading tools demo"
+site_description = "Test page for click-to-zoom Mermaid diagrams on a Zensical site."
+site_url = "https://vivainio.github.io/scratch-pad/zensical-reading-tools/"
+docs_dir = "docs"
+nav = [{ "Demo" = "index.md" }]
+
+[project.markdown_extensions."pymdownx.superfences"]
+custom_fences = [{ name = "mermaid", class = "mermaid" }]
