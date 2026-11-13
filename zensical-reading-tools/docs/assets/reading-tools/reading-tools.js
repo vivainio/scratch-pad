@@ -94,14 +94,29 @@
     document.documentElement.classList.remove("od-overlay-open");
   }
 
-  function openOverlay(controls) {
+  // Label for the overlay: the nearest heading above the element, else the
+  // page title without the site name.
+  function titleFor(el) {
+    var heads = document.querySelectorAll(
+      ".md-typeset h1, .md-typeset h2, .md-typeset h3, .md-typeset h4, .md-typeset h5, .md-typeset h6"
+    );
+    var found = null;
+    for (var i = 0; i < heads.length; i++) {
+      if (!(heads[i].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)) break;
+      found = heads[i];
+    }
+    var text = found && found.textContent.replace(/\s*¶\s*$/, "").trim();
+    return text || document.title.replace(/ - .*$/, "");
+  }
+
+  function openOverlay(controls, source) {
     closeOverlay();
     var overlay = document.createElement("div");
     overlay.className = "od-overlay md-typeset";
     var bar = document.createElement("div");
     bar.className = "od-overlay__bar";
     var label = document.createElement("span");
-    label.textContent = document.title.replace(/ - .*$/, "") + " (Esc to close)";
+    label.textContent = titleFor(source) + " (Esc to close)";
     var tools = document.createElement("span");
     tools.className = "od-overlay__tools";
     (controls || []).forEach(function (c) {
@@ -129,7 +144,7 @@
       tools.className = "od-table-tools";
       tools.appendChild(
         button("Full screen", "Open this table in a full-screen view", function () {
-          openOverlay().appendChild(table.cloneNode(true));
+          openOverlay(null, table).appendChild(table.cloneNode(true));
         })
       );
       anchor.parentNode.insertBefore(tools, anchor);
@@ -189,7 +204,7 @@
       button("+", "Zoom in ( + )", function () {
         zoomTo(scale * STEP);
       }),
-    ]);
+    ], host);
     body.classList.add("od-overlay__body--diagram");
 
     var stage = document.createElement("div");
