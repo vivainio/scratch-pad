@@ -23,13 +23,26 @@ jobs:
       - uses: actions/configure-pages@v6
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v5
-      - name: Build
+      - name: UI from the PR branch
+        uses: actions/checkout@v7
+        with:
+          repository: vivainio/ui
+          ref: feature/mermaid-zoom
+          path: ui
+      - name: Build, with the reading-tools script (workaround)
         working-directory: zensical-reading-tools
         run: uv tool run zensical@0.0.73 build --clean --strict
-      - name: Stage under its own path
+      - name: Build, with the PR's native zoom
+        working-directory: zensical-reading-tools
+        run: |
+          uv tool run zensical@0.0.73 build --clean --strict -f zensical.pr.toml
+          # Zensical ships its own UI: replace its bundle with the PR branch's
+          cp ../ui/dist/assets/javascripts/bundle.*.min.js site-pr/assets/javascripts/bundle.*.min.js
+      - name: Stage under their own paths
         run: |
           mkdir -p _site
           mv zensical-reading-tools/site _site/zensical-reading-tools
+          mv zensical-reading-tools/site-pr _site/zensical-ui-pr
       - uses: actions/upload-pages-artifact@v5
         with:
           path: _site

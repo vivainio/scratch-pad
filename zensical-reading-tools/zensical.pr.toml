@@ -1,0 +1,10 @@
+[project]
+site_name = "Zensical Mermaid zoom: UI PR demo"
+site_description = "Native click-to-zoom Mermaid diagrams, built with the vivainio/ui feature/mermaid-zoom branch."
+site_url = "https://vivainio.github.io/scratch-pad/zensical-ui-pr/"
+site_dir = "site-pr"
+docs_dir = "docs"
+nav = [{ "Demo" = "index.md" }]
+
+[project.markdown_extensions."pymdownx.superfences"]
+custom_fences = [{ name = "mermaid", class = "mermaid" }]
